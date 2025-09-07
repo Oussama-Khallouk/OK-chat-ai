@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
 
 # ----------------- OpenAI -----------------
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # load from .env
+client = OpenAI()  # load from .env
 
 # ----------------- Models -----------------
 class User(db.Model):
