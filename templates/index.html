@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OK Chat AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+        <button class="new-chat-btn" onclick="startNewChat()">+ New Chat</button>
+        <div id="auth-status"></div>
+      </div>
+      <input type="text" id="searchInput" placeholder="Search chats..." oninput="filterChats()">
+      <div class="history" id="history"></div>
+    </aside>
+
+    <!-- Chat Area -->
+    <main class="chat-main">
+      <header class="chat-header">
+        <div class="auth-buttons">
+          {% if not logged_in %}
+            <button onclick="openAuthModal('login')">Login</button>
+            <button onclick="openAuthModal('signup')">Sign Up</button>
+          {% else %}
+            <button onclick="logoutUser()">Logout</button>
+          {% endif %}
+        </div>
+        <button class="dark-toggle" onclick="toggleDarkLight()">🌓</button>
+      </header>
+
+      <!-- Welcome overlay -->
+      <div id="welcome-title">OK is here</div>
+
+      <div class="chat-container" id="chat"></div>
+
+      <div class="chat-input-wrapper">
+        <input type="text" id="message" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){sendMessage()}">
+        <button id="sendBtn" onclick="sendMessage()">Send</button>
+      </div>
+
+      <footer class="chat-footer">
+        Made by Khallouk Oussama
+      </footer>
+    </main>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="auth-modal" style="display: none;">
+    <div class="auth-content">
+      <span class="close" onclick="closeAuthModal()">&times;</span>
+
+      <div id="login-form">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+      </div>
+
+      <div id="signup-form">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Username">
+        <input type="password" id="signup-password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    function logoutUser() {
+      fetch('/logout')
+        .then(() => location.reload())
+        .catch(err => console.error(err));
+    }
+  </script>
+</body>
+</html>
