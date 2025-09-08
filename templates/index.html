@@ -27,7 +27,6 @@
             <button onclick="openAuthModal('login')">Login</button>
             <button onclick="openAuthModal('signup')">Sign Up</button>
           {% else %}
-            <button onclick="openProfileModal()">Profile ⚙️</button>
             <button onclick="logoutUser()">Logout</button>
           {% endif %}
         </div>
@@ -55,35 +54,19 @@
     <div class="auth-content">
       <span class="close" onclick="closeAuthModal()">&times;</span>
 
-      <!-- Login -->
       <div id="login-form">
         <h2>Login</h2>
-        <input type="email" id="login-email" placeholder="Email">
+        <input type="text" id="login-username" placeholder="Username">
         <input type="password" id="login-password" placeholder="Password">
         <button onclick="login()">Login</button>
-        <hr>
-        <button class="google-login" onclick="googleLogin()">Login with Google</button>
       </div>
 
-      <!-- Signup -->
       <div id="signup-form">
         <h2>Sign Up</h2>
-        <input type="email" id="signup-email" placeholder="Email">
+        <input type="text" id="signup-username" placeholder="Username">
         <input type="password" id="signup-password" placeholder="Password">
         <button onclick="signup()">Sign Up</button>
       </div>
-    </div>
-  </div>
-
-  <!-- Profile Settings Modal -->
-  <div id="profile-modal" class="auth-modal">
-    <div class="auth-content">
-      <span class="close" onclick="closeProfileModal()">&times;</span>
-      <h2>Profile Settings</h2>
-      <input type="password" id="new-password" placeholder="New Password">
-      <button onclick="changePassword()">Change Password</button>
-      <hr>
-      <button class="delete-account" onclick="deleteAccount()">Delete Account ❌</button>
     </div>
   </div>
 
@@ -96,12 +79,10 @@
         .catch(err => console.error(err));
     }
 
-    // Hide modals if clicked outside
+    // Hide auth modal if clicked outside content
     window.onclick = function(event) {
-      const authModal = document.getElementById("auth-modal");
-      const profileModal = document.getElementById("profile-modal");
-      if (event.target === authModal) closeAuthModal();
-      if (event.target === profileModal) closeProfileModal();
+      const modal = document.getElementById("auth-modal");
+      if (event.target === modal) closeAuthModal();
     }
   </script>
 </body>
