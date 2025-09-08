@@ -1,3 +1,4 @@
+/* ------------------ Root Variables ------------------ */
 :root {
   --bg-light: #f9f9fb;
   --bg-dark: #1e1e1e;
@@ -10,6 +11,7 @@
   --text-dark: #ddd;
 }
 
+/* ------------------ Body ------------------ */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,13 +27,13 @@ body.dark {
   color: var(--text-dark);
 }
 
-/* Container */
+/* ------------------ Container ------------------ */
 .container {
   display: flex;
   width: 100%;
 }
 
-/* Sidebar */
+/* ------------------ Sidebar ------------------ */
 .sidebar {
   width: 300px;
   background: var(--sidebar-bg);
@@ -65,7 +67,6 @@ body.dark .sidebar {
   padding: 8px 15px;
   cursor: pointer;
   font-weight: bold;
-  text-decoration: none;
   text-align: center;
   transition: 0.2s;
 }
@@ -130,7 +131,7 @@ body.dark .history-item {
   cursor: pointer;
 }
 
-/* Chat Main */
+/* ------------------ Chat Main ------------------ */
 .chat-main {
   flex: 1;
   display: flex;
@@ -138,7 +139,7 @@ body.dark .history-item {
   position: relative;
 }
 
-/* Header */
+/* ------------------ Header ------------------ */
 .chat-header {
   padding: 20px;
   display: flex;
@@ -152,7 +153,7 @@ body.dark .chat-header {
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Welcome Title */
+/* ------------------ Welcome Title ------------------ */
 #welcome-title {
   position: absolute;
   top: 50%;
@@ -171,7 +172,7 @@ body.dark #welcome-title {
   color: #9a8cff;
 }
 
-/* Chat container */
+/* ------------------ Chat Container ------------------ */
 .chat-container {
   flex: 1;
   padding: 20px 15px;
@@ -181,7 +182,7 @@ body.dark #welcome-title {
   overflow-y: auto;
 }
 
-/* Chat bubbles */
+/* ------------------ Chat Bubbles ------------------ */
 .message {
   max-width: 70%;
   padding: 12px 16px;
@@ -214,7 +215,7 @@ body.dark .message.bot {
   color: #ddd;
 }
 
-/* Chat input */
+/* ------------------ Chat Input ------------------ */
 .chat-input-wrapper {
   display: flex;
   padding: 10px 20px;
@@ -257,7 +258,7 @@ body.dark .chat-input-wrapper input {
   background: #564fd1;
 }
 
-/* Footer */
+/* ------------------ Footer ------------------ */
 .chat-footer {
   text-align: center;
   padding: 10px;
@@ -269,7 +270,7 @@ body.dark .chat-footer {
   color: #aaa;
 }
 
-/* Animations */
+/* ------------------ Animations ------------------ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -285,29 +286,8 @@ body.dark .chat-footer {
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* Login/Signup */
-.auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #f3f3f3;
-}
-.auth-box {
-  background: #fff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  width: 320px;
-  text-align: center;
-}
-.auth-box h2 { color: #6c63ff; margin-bottom: 20px; }
-.auth-box input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; }
-.auth-box button { width: 100%; padding: 12px; margin-top: 12px; background: #6c63ff; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
-.auth-box button:hover { background: #564fd1; }
-
-/* Auth modal */
-.auth-modal {
+/* ------------------ Auth Modal ------------------ */
+.auth-modal, .profile-modal {
   display: none;
   position: fixed;
   z-index: 100;
@@ -318,41 +298,80 @@ body.dark .chat-footer {
   align-items: center;
 }
 
-.auth-content {
+.auth-content, .profile-content {
   background: var(--bg-light);
   padding: 30px;
   border-radius: 12px;
   width: 320px;
   position: relative;
+  transition: 0.3s;
 }
 
-.auth-content h2 { color: var(--accent); text-align: center; }
-.auth-content input {
+body.dark .auth-content, body.dark .profile-content {
+  background: var(--sidebar-dark);
+  color: var(--text-dark);
+}
+
+.auth-content h2, .profile-content h2 {
+  color: var(--accent);
+  text-align: center;
+}
+
+.auth-content input, .profile-content input {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
-.auth-content button {
+
+body.dark .auth-content input, body.dark .profile-content input {
+  background: #2b2b2b;
+  border: 1px solid #666;
+  color: #ddd;
+}
+
+.auth-content button, .profile-content button {
   width: 100%;
   padding: 12px;
   margin-top: 12px;
-  background: var(--accent);
-  color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
 }
-.auth-content button:hover { background:#564fd1; }
-.auth-content .close {
+
+.auth-content button:hover, .profile-content button:hover {
+  opacity: 0.9;
+}
+
+/* Google login */
+.google-btn {
+  background: #db4437;
+  color: #fff;
+  font-weight: bold;
+}
+.google-btn:hover {
+  background: #c23321;
+}
+
+/* Profile buttons */
+.profile-content .save-btn { background: var(--accent); color: #fff; }
+.profile-content .save-btn:hover { background: #564fd1; }
+
+.profile-content .delete-btn { background: #d9534f; color: #fff; }
+.profile-content .delete-btn:hover { background: #b52b27; }
+
+/* Close buttons */
+.auth-content .close, .profile-content .close {
   position: absolute;
   top: 10px; right: 15px;
   font-size: 22px;
   cursor: pointer;
 }
 
-/* Auth buttons in header */
+/* ------------------ Header Auth Buttons ------------------ */
 .auth-buttons button {
   background: var(--accent);
   color: #fff;
@@ -363,4 +382,7 @@ body.dark .chat-footer {
   font-weight: bold;
   margin-right: 8px;
 }
-.auth-buttons button:hover { background: #564fd1; }
+
+.auth-buttons button:hover {
+  background: #564fd1;
+}

@@ -12,17 +12,10 @@ let currentChat = null;
 // ------------------ Load Conversations ------------------
 async function loadConversations() {
   if (!document.body.dataset.loggedin) return;
-  try {
-    const res = await fetch("/get_chats");
-    conversations = await res.json();
-    if (conversations.length > 0) {
-      currentChat = conversations[0];
-    }
-    renderChat();
-    renderHistory();
-  } catch (err) {
-    console.error("Error loading chats", err);
-  }
+  const res = await fetch("/get_chats");
+  conversations = await res.json();
+  if (conversations.length > 0) currentChat = conversations[0];
+  renderChat();
 }
 
 // ------------------ Render Chat ------------------
@@ -83,6 +76,7 @@ function renderChat() {
   });
 
   chatDiv.scrollTop = chatDiv.scrollHeight;
+  renderHistory();
 }
 
 // ------------------ Sidebar ------------------
@@ -93,17 +87,16 @@ function renderHistory() {
     const item = document.createElement("div");
     item.className = "history-item";
     const titleSpan = document.createElement("span");
-    titleSpan.textContent = chat.title || "Untitled";
+    titleSpan.textContent = chat.title;
     item.appendChild(titleSpan);
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "🗑";
-    deleteBtn.onclick = (e) => {
+    deleteBtn.onclick = e => {
       e.stopPropagation();
-      // TODO: you might want to call backend delete endpoint later
       conversations.splice(index, 1);
-      if (currentChat === chat) currentChat = null;
       renderHistory();
+      if (currentChat === chat) currentChat = null;
       renderChat();
     };
     item.appendChild(deleteBtn);
@@ -112,7 +105,6 @@ function renderHistory() {
       currentChat = conversations[index];
       renderChat();
     };
-
     historyDiv.appendChild(item);
   });
 }
@@ -125,10 +117,9 @@ async function startNewChat() {
   if (!data.success) return alert("Error creating chat");
 
   const newChat = data.chat; // {db_id,title,messages}
-  conversations.unshift(newChat); // add to top, keep history
+  conversations = [newChat];
   currentChat = newChat;
   renderChat();
-  renderHistory();
 }
 
 // ------------------ Send Message ------------------
@@ -143,7 +134,6 @@ async function sendMessage() {
   const userMsg = { sender: "user", text: message };
   currentChat.messages.push(userMsg);
   renderChat();
-  renderHistory();
   input.value = "";
 
   if (currentChat.db_id) {
@@ -190,7 +180,7 @@ async function sendMessage() {
 function filterChats() {
   const filter = document.getElementById("searchInput").value.toLowerCase();
   const historyDiv = document.getElementById("history");
-  Array.from(historyDiv.children).forEach((item) => {
+  Array.from(historyDiv.children).forEach(item => {
     const text = item.children[0].textContent.toLowerCase();
     item.style.display = text.includes(filter) ? "flex" : "none";
   });
@@ -206,41 +196,71 @@ function closeAuthModal() {
   document.getElementById("auth-modal").style.display = "none";
 }
 
+// ------------------ Profile Modal ------------------
+function openProfileModal() {
+  document.getElementById("profile-modal").style.display = "flex";
+}
+function closeProfileModal() {
+  document.getElementById("profile-modal").style.display = "none";
+}
+
 // ------------------ Login/Signup ------------------
 async function login() {
-  const username = document.getElementById("login-username").value;
+  const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   const res = await fetch("/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ email, password })
   });
   const data = await res.json();
-  if (data.success) {
-    closeAuthModal();
-    location.reload();
-  } else alert(data.message);
+  if (data.success) { closeAuthModal(); location.reload(); }
+  else alert(data.message);
 }
+
 async function signup() {
-  const username = document.getElementById("signup-username").value;
+  const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
   const res = await fetch("/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ email, password })
   });
   const data = await res.json();
-  if (data.success) {
-    closeAuthModal();
-    location.reload();
-  } else alert(data.message);
+  if (data.success) { closeAuthModal(); location.reload(); }
+  else alert(data.message);
+}
+
+// ------------------ Google Login ------------------
+function googleLogin() {
+  window.location.href = "/login/google"; // handled by backend OAuth
+}
+
+// ------------------ Profile Settings ------------------
+async function changePassword() {
+  const newPass = document.getElementById("new-password").value;
+  if (!newPass) return alert("Enter a new password");
+  const res = await fetch("/change_password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: newPass })
+  });
+  const data = await res.json();
+  alert(data.message);
+  if (data.success) closeProfileModal();
+}
+
+async function deleteAccount() {
+  if (!confirm("Are you sure? This cannot be undone.")) return;
+  const res = await fetch("/delete_account", { method: "POST" });
+  const data = await res.json();
+  alert(data.message);
+  if (data.success) location.reload();
 }
 
 // ------------------ Logout ------------------
 function logoutUser() {
-  fetch("/logout")
-    .then(() => location.reload())
-    .catch(console.error);
+  fetch("/logout").then(() => location.reload()).catch(console.error);
 }
 
 // ------------------ Window Onload ------------------
