@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body data-loggedin="{{ 'true' if logged_in else '' }}">
   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -50,7 +50,7 @@
   </div>
 
   <!-- Auth Modal -->
-  <div id="auth-modal" class="auth-modal" style="display: none;">
+  <div id="auth-modal" class="auth-modal">
     <div class="auth-content">
       <span class="close" onclick="closeAuthModal()">&times;</span>
 
@@ -72,10 +72,17 @@
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
   <script>
+    // Logout button for header
     function logoutUser() {
       fetch('/logout')
         .then(() => location.reload())
         .catch(err => console.error(err));
+    }
+
+    // Hide auth modal if clicked outside content
+    window.onclick = function(event) {
+      const modal = document.getElementById("auth-modal");
+      if (event.target === modal) closeAuthModal();
     }
   </script>
 </body>
